@@ -40,22 +40,22 @@ public class Usuario implements UserDetails{
     private String username;
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private Set<UserRole> roles = new HashSet<>();
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private Set<UserRole> role = new HashSet<>();
     
     
     @Transient
     public void addRole(Role role) {
         UserRole userRole = new UserRole(role);
         userRole.setUsuario(this);
-        this.roles.add(userRole);
+        this.role.add(userRole);
     }
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-		this.roles.forEach(role -> {
+		this.role.forEach(role -> {
 			authorities.add(new SimpleGrantedAuthority(role.getRole().name()));
 		});
 		return authorities;

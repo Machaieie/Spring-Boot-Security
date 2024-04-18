@@ -9,8 +9,8 @@ import com.security.Spring_Security.model.Usuario;
 
 public interface UserRepository extends JpaRepository<Usuario,Integer>{
 
-    public Optional<Usuario> findByUsernameAndEnabled(String username, boolean enabled);
+   
 	public Optional<Usuario> findByUsernameAndPassword(String username, String password);
-	public UserDetails findByUsername(String username);
+	public Optional<Usuario> findByUsername(String username);
     
 }
