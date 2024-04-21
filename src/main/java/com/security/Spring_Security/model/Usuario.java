@@ -8,6 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.security.Spring_Security.enums.Role;
 
 import jakarta.persistence.CascadeType;
@@ -30,16 +32,19 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Usuario implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  int id;
-    private String fistName;
+    private String firstName;
     private String lastName;
     private String username;
     private String password;
 
+    
+    @JsonIgnore
     @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<UserRole> role = new HashSet<>();
     
@@ -84,5 +89,11 @@ public class Usuario implements UserDetails{
     public boolean isEnabled() {
         return true;
     }
+
+    @Transient
+	public void addRole(UserRole role) {
+		role.setUsuario(this);
+		this.role.add(role);
+	}
 
 }
