@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.security.Spring_Security.dto.RegistrationRequestDTO;
 import com.security.Spring_Security.model.AuthenticationResponse;
+import com.security.Spring_Security.model.Response;
 import com.security.Spring_Security.model.Usuario;
 import com.security.Spring_Security.services.AuthenticationService;
 
@@ -17,12 +19,12 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody Usuario usuario){
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegistrationRequestDTO usuario){
         return ResponseEntity.ok(authenticationService.register(usuario));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login( @RequestBody Usuario usuario){
+    public ResponseEntity<Response> login( @RequestBody Usuario usuario){
         return ResponseEntity.ok(authenticationService.authenticate(usuario));
     }
 }
