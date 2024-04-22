@@ -19,9 +19,18 @@ public class ProdutoService implements ProdutoInterface<Produto>{
 
     @Override
     public void adicionarProduto(Produto produto) {
-       Produto produtoExistente = produtoRepository.findByNome(produto.getNome()).orElseThrow(()-> new DuplicatedEntitiesExceptions("Erro! este produto ou nome já esta registado no sistema") );
-       produtoRepository.save(produto);
+        String nomeUpperCase = produto.getNome().toUpperCase(); 
+        boolean produtoExistente = produtoRepository.findByNomeIgnoreCase(nomeUpperCase)
+                .isPresent();
+    
+        if (produtoExistente) {
+            throw new DuplicatedEntitiesExceptions("Erro! Este produto ou nome já está registado no sistema");
+        }
+            produto.setNome(nomeUpperCase);
+    
+        produtoRepository.save(produto);
     }
+    
 
     @Override
     public List<Produto> listarProdutos() {
@@ -36,7 +45,7 @@ public class ProdutoService implements ProdutoInterface<Produto>{
 
     @Override
     public Produto atualizarProduto(Produto produto) {
-        Produto produtoExistente = produtoRepository.findByNome(produto.getNome()).orElseThrow(()-> new ResourceNotFoundException("Erro! O produto não foi encontrado no sistema") );
+        Produto produtoExistente = produtoRepository.findByNomeIgnoreCase(produto.getNome()).orElseThrow(()-> new ResourceNotFoundException("Erro! O produto de nome "+produto.getNome()+" não foi encontrado no sistema") );
         produtoExistente.setNome(produto.getNome());
         produtoExistente.setDescricao(produto.getDescricao());
         produtoExistente.setPreco(produto.getPreco());
@@ -48,8 +57,8 @@ public class ProdutoService implements ProdutoInterface<Produto>{
 
     @Override
     public void exluirProduto(Produto produto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'exluirProduto'");
+        Produto produtoExistente = produtoRepository.findByNomeIgnoreCase(produto.getNome()).orElseThrow(()-> new ResourceNotFoundException("Erro! O produto de nome "+produto.getNome()+" não foi encontrado no sistema") );
+        produtoRepository.delete(produtoExistente);
     }
 
 
